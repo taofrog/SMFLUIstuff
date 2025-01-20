@@ -76,7 +76,7 @@ namespace UI
             set { halfsize = value; }
         }
 
-        public UIelement(vec2 locked, vec2 offset, vec2 hsize, string texturepath = "notexture.png")
+        public UIelement(vec2 locked, vec2 offset, vec2 hsize, string texturepath = "assets/notexture.png")
         {
             position = new UIpos(locked, offset);
             halfsize = hsize;

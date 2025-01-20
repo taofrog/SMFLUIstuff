@@ -9,6 +9,7 @@ using SFML;
 using SFML.Window;
 using SFML.Graphics;
 using System.Runtime.InteropServices.Marshalling;
+using static SFML.Window.Mouse;
 
 namespace UI
 {
@@ -41,8 +42,32 @@ namespace UI
 
     internal class UIelement
     {
-        UIpos position;
-        vec2 halfsize;
+        protected UIpos position;
+        protected vec2 halfsize;
+
+        protected Texture texture;
+        protected Sprite sprite;
+
+        public uint xlock
+        {
+            get { return position.xlock; }
+            set { position.xlock = value; }
+        }
+        public uint ylock
+        {
+            get { return position.ylock; }
+            set { position.ylock = value; }
+        }
+        public float xoffset
+        {
+            get { return position.xoffset; }
+            set { position.xoffset = value; }
+        }
+        public float yoffset
+        {
+            get { return position.yoffset; }
+            set { position.yoffset = value; }
+        }
 
         // actually halfsize idk why its named that
         public vec2 size
@@ -51,10 +76,15 @@ namespace UI
             set { halfsize = value; }
         }
 
-        public UIelement(vec2 locked, vec2 offset, vec2 hsize)
+        public UIelement(vec2 locked, vec2 offset, vec2 hsize, string texturepath = "notexture.png")
         {
             position = new UIpos(locked, offset);
             halfsize = hsize;
+
+            texture = new Texture(texturepath);
+            texture.Smooth = true;
+            sprite = new Sprite(texture);
+            sprite.Scale = new Vector2f(2*halfsize.x / texture.Size.X, 2 * halfsize.y / texture.Size.Y);
         }
 
         public vec2 topleft(View camera)
@@ -90,6 +120,14 @@ namespace UI
             }
 
             return topleft;
+        }
+
+        public void draw(RenderWindow app)
+        {
+            vec2 pos = topleft(app.GetView());
+            sprite.Position = new Vector2f(pos.x, pos.y);
+
+            app.Draw(sprite);
         }
 
         /*

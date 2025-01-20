@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.ExceptionServices;
 using SFML;
 using SFML.Graphics;
 using SFML.System;
@@ -9,21 +10,12 @@ namespace UI
 {
     static class Program
     {
-        /*static void drawcollider(Collider body, RenderWindow screen, Color colour)
-        {
-            RectangleShape r = new RectangleShape(new Vector2f(body.size.x, body.size.y));
-            r.Origin = new Vector2f(body.half_size.x, body.half_size.y);
-            r.Position = new Vector2f(body.position.x, body.position.y);
 
-            r.FillColor = colour;
-            screen.Draw(r);
-        }
-        */
-        static void OnClose(object sender, EventArgs e)
+        static void OnClose(object ?sender, EventArgs e)
         {
             // Close the window when OnClose event is received
-            RenderWindow window = (RenderWindow)sender;
-            window.Close();
+            RenderWindow ?window = sender as RenderWindow;
+            window?.Close();
         }
 
         static View windowresize(View camera, vec2 maxsize, vec2 minsize, float resizedx, float resizedy)
@@ -37,15 +29,46 @@ namespace UI
 
         static void Main()
         {
+            // defining globals
             Clock clock = new();
             Time dt = new();
-            // Create the main window
+
+            vec2 mousepos = new();
+            Color windowcolour = new Color(0, 192, 255);
+
+            vec2 lockaxis = new();
+
+            List<UIelement> uielements = new();
+
+            int page = 0;
+
+            //defining button layouts for different pages
+            //
+            UIelement[] menubuttons = {new Button("play", lockaxis, new(0), new(30, 30), "playbutton.png"),
+                                    new Button("left", new(1, 1), new(-75, 0), new(30, 30), "leftbutton.png"),
+                                    new Button("right", new(1, 1), new(75, 0), new(30, 30), "rightbutton.png"),
+                                    new Button("up", new(1, 1), new(0, -75), new(30, 30), "upbutton.png"),
+                                    new Button("down", new(1, 1), new(0, 75), new(30, 30), "downbutton.png"),
+                                    new Button("reset", new(1, 1), new(-250, 0), new(20, 20), "reloadbutton.png"),
+                                    new UIelement(new(1, 1), new(0, 0), new(120, 120), "arrowbackground.png")
+                                    };
+
+            UIelement[] submenubuttons = { new Button("play", lockaxis, new(0), new(20, 10), "playbutton.png"),
+                                        new Button("left", new(0, 1), new(0, 100), new(20, 20), "leftbutton.png"),
+                                        new Button("right", new(2, 1), new(0, 100), new(20, 20), "rightbutton.png"),
+                                        new Button("colour", new(1, 2), new(0, -50), new(20, 20)),
+                                        };
+
+
+            // CREATING MAIN WINDOW
             Styles style = Styles.Default;
             RenderWindow app = new RenderWindow(new VideoMode(640, 360), "Game");
 
             app.SetVerticalSyncEnabled(true);
             //app.SetFramerateLimit(10);
 
+
+            // CAMERA RESIZING EVENT STUFF
             vec2 camsize = new(1000, 562.5);
             vec2 minsize = new(640, 360);
             View camera = new View(new Vector2f(400, 400), new Vector2f());
@@ -53,7 +76,7 @@ namespace UI
             camera = windowresize(camera, camsize, minsize, app.Size.X, app.Size.Y);
             app.SetView(camera);
 
-            void OnKeyPress(object sender, KeyEventArgs e)
+            void OnKeyPress(object ?sender, KeyEventArgs e)
             {
                 if (e.Scancode == Keyboard.Scancode.F11)
                 {
@@ -78,8 +101,11 @@ namespace UI
                     app.Closed += OnClose;
                     app.Resized += OnResize;
                     app.KeyPressed += OnKeyPress;
+                    app.MouseButtonPressed += OnMousedown;
+                    app.MouseButtonReleased += OnMouseup;
 
                     camera = windowresize(camera, camsize, minsize, app.Size.X, app.Size.Y);
+                    app.SetView(camera);
                 }
                 if (e.Scancode == Keyboard.Scancode.Escape)
                 {
@@ -87,21 +113,127 @@ namespace UI
                 }
             }
 
-            void OnResize(object sender, SizeEventArgs e)
+            void OnResize(object ?sender, SizeEventArgs e)
             {
                 RenderWindow? window = sender as RenderWindow;
 
                 camera = windowresize(camera, camsize, minsize, e.Width, e.Height);
-                window.SetView(camera);
+                window?.SetView(camera);
             }
 
             app.Closed += OnClose;
             app.Resized += OnResize;
             app.KeyPressed += OnKeyPress;
 
-            Color windowColor = new Color(0, 192, 255);
+            // UI EVENT STUFF
 
-            vec2 lockaxis = new();
+            void OnMousedown(object ?sender, MouseButtonEventArgs e)
+            {
+                foreach (UIelement element in uielements.ToList())
+                {
+                    Button? button = element as Button;
+                    if (button != null)
+                    button?.checkpress(mousepos, app);
+                }
+            }
+
+            void OnMouseup(object ?sender, MouseButtonEventArgs e)
+            {
+                foreach (UIelement element in uielements.ToList())
+                {
+                    Button? button = element as Button;
+                    button?.checkrelease();
+                }
+            }
+
+            app.MouseButtonPressed += OnMousedown;
+            app.MouseButtonReleased += OnMouseup;
+
+            void OnButtonPress(object sender, EventArgs e)
+            {
+                Console.WriteLine(sender);
+
+                string ?name = sender.ToString();
+
+                if (name == "play")
+                {
+                    if (page == 0)
+                    {
+                        page = 1;
+
+                        uielements.Clear();
+                        uielements = new(submenubuttons);
+                    }
+                    else
+                    {
+                        page = 0;
+
+                        uielements.Clear();
+                        uielements = new(menubuttons);
+                    }
+                }
+                else if (name == "left")
+                {
+                    lockaxis.x = 0;
+                }
+                else if (name == "right")
+                {
+                    lockaxis.x = 2;
+                }
+                else if (name == "down")
+                {
+                    lockaxis.y = 2;
+                }
+                else if (name == "up")
+                {
+                    lockaxis.y = 0;
+                }
+                else if (name == "reset")
+                {
+                    lockaxis = new(1, 1);
+                }
+                else if(name == "colour")
+                {
+                    if (windowcolour.B == 255)
+                    {
+                        windowcolour = new Color(0, 0, 0);
+                    }
+                    else
+                    {
+                        windowcolour = new Color(0, 192, 255);
+                    }
+                }
+            }
+            void OnButtonRelease(object sender, EventArgs e)
+            {
+                
+            }
+
+
+            // CREATING A UI
+            foreach (UIelement element in menubuttons)
+            {
+                Button? button = element as Button;
+
+                if (button != null)
+                {
+                    button.buttondown += OnButtonPress;
+                    button.buttonup += OnButtonRelease;
+                }
+            }
+
+            foreach (UIelement element in submenubuttons)
+            {
+                Button? button = element as Button;
+
+                if (button != null)
+                {
+                    button.buttondown += OnButtonPress;
+                    button.buttonup += OnButtonRelease;
+                }
+            }
+
+            uielements = new(menubuttons);
 
             // Start the game loop
             while (app.IsOpen)
@@ -109,29 +241,28 @@ namespace UI
                 // Process events
                 app.DispatchEvents();
 
+                mousepos = new(Mouse.GetPosition(app).X, Mouse.GetPosition(app).Y);
+
                 if (Keyboard.IsKeyPressed(Keyboard.Key.W))
                 {
                 }
                 if (Mouse.IsButtonPressed(Mouse.Button.Left))
                 {
-                    vec2 mousepos = new(Mouse.GetPosition(app).X, Mouse.GetPosition(app).Y);
-                    lockaxis.x = Math.Clamp(MathF.Floor(3 * (float)mousepos.x / app.Size.X), 0, 2);
-                    lockaxis.y = Math.Clamp(MathF.Floor(3 * (float)mousepos.y / app.Size.Y), 0, 2);
+                    //lockaxis.x = Math.Clamp(MathF.Floor(3 * (float)mousepos.x / app.Size.X), 0, 2);
+                    //lockaxis.y = Math.Clamp(MathF.Floor(3 * (float)mousepos.y / app.Size.Y), 0, 2);
                 }
 
-                UIelement button = new UIelement(lockaxis, new(0), new(50, 30));
+                uielements[0].xlock = (uint)lockaxis.x;
+                uielements[0].ylock = (uint)lockaxis.y;
 
                 // Clear screen
-                app.Clear(windowColor);
+                app.Clear(windowcolour);
 
                 //draw things here
-                RectangleShape r = new RectangleShape(new Vector2f(button.size.x*2, button.size.y*2));
-                vec2 buttonpos = button.topleft(app.GetView());
-                r.Position = new Vector2f(buttonpos.x, buttonpos.y);
-                Console.WriteLine(app.GetView().Center);
-
-                r.FillColor = new(255, 0, 0, 255);
-                app.Draw(r);
+                for (int i = uielements.Count - 1; i >= 0; i--)
+                {
+                    uielements[i].draw(app);
+                }
 
                 // Update the window
                 app.Display();

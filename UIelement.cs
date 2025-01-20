@@ -122,7 +122,7 @@ namespace UI
             return topleft;
         }
 
-        public void draw(RenderWindow app)
+        public virtual void draw(RenderWindow app)
         {
             vec2 pos = topleft(app.GetView());
             sprite.Position = new Vector2f(pos.x, pos.y);

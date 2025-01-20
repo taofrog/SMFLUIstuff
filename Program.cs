@@ -45,11 +45,11 @@ namespace UI
             //defining button layouts for different pages
             //
             UIelement[] menubuttons = {new Button("play", lockaxis, new(0), new(30, 30), "playbutton.png"),
-                                    new Button("left", new(1, 1), new(-75, 0), new(30, 30), "leftbutton.png"),
-                                    new Button("right", new(1, 1), new(75, 0), new(30, 30), "rightbutton.png"),
-                                    new Button("up", new(1, 1), new(0, -75), new(30, 30), "upbutton.png"),
-                                    new Button("down", new(1, 1), new(0, 75), new(30, 30), "downbutton.png"),
-                                    new Button("reset", new(1, 1), new(-250, 0), new(20, 20), "reloadbutton.png"),
+                                    new Button("left", new(1, 1), new(-75, 0), new(30, 30), "leftbutton.png", "altleftbutton.png"),
+                                    new Button("right", new(1, 1), new(75, 0), new(30, 30), "rightbutton.png", "altrightbutton.png"),
+                                    new Button("up", new(1, 1), new(0, -75), new(30, 30), "upbutton.png", "altupbutton.png"),
+                                    new Button("down", new(1, 1), new(0, 75), new(30, 30), "downbutton.png", "altdownbutton.png"),
+                                    new Button("reset", new(1, 1), new(-250, 0), new(20, 20), "reloadbutton.png", "altreloadbutton.png"),
                                     new UIelement(new(1, 1), new(0, 0), new(120, 120), "arrowbackground.png")
                                     };
 
@@ -132,7 +132,6 @@ namespace UI
                 foreach (UIelement element in uielements.ToList())
                 {
                     Button? button = element as Button;
-                    if (button != null)
                     button?.checkpress(mousepos, app);
                 }
             }
@@ -151,28 +150,9 @@ namespace UI
 
             void OnButtonPress(object sender, EventArgs e)
             {
-                Console.WriteLine(sender);
-
                 string ?name = sender.ToString();
 
-                if (name == "play")
-                {
-                    if (page == 0)
-                    {
-                        page = 1;
-
-                        uielements.Clear();
-                        uielements = new(submenubuttons);
-                    }
-                    else
-                    {
-                        page = 0;
-
-                        uielements.Clear();
-                        uielements = new(menubuttons);
-                    }
-                }
-                else if (name == "left")
+                if (name == "left")
                 {
                     lockaxis.x = 0;
                 }
@@ -206,7 +186,25 @@ namespace UI
             }
             void OnButtonRelease(object sender, EventArgs e)
             {
-                
+                string? name = sender.ToString();
+
+                if (name == "play")
+                {
+                    if (page == 0)
+                    {
+                        page = 1;
+
+                        uielements.Clear();
+                        uielements = new(submenubuttons);
+                    }
+                    else
+                    {
+                        page = 0;
+
+                        uielements.Clear();
+                        uielements = new(menubuttons);
+                    }
+                }
             }
 
 

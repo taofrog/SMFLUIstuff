@@ -36,7 +36,9 @@ namespace UI
             vec2 mousepos = new();
             Color windowcolour = new Color(0, 192, 255);
 
-            vec2 lockaxis = new();
+            float brightness = 255;
+
+            vec2 lockaxis = new(1, 1);
 
             List<UIelement> uielements = new();
 
@@ -55,6 +57,7 @@ namespace UI
 
             UIelement[] submenubuttons = { new Button("play", lockaxis, new(0), new(20, 20), "assets/playbutton.png"),
                                         new Button("colour", new(1, 2), new(0, -50), new(20, 20)),
+                                        new Slider("brightness", new(1, 1), new(0, -50), new(100, 10), 1)
                                         };
 
 
@@ -131,6 +134,9 @@ namespace UI
                 {
                     Button? button = element as Button;
                     button?.checkpress(mousepos, app);
+
+                    Slider? slider = element as Slider;
+                    slider?.checkpress(mousepos, app);
                 }
             }
 
@@ -140,6 +146,9 @@ namespace UI
                 {
                     Button? button = element as Button;
                     button?.checkrelease();
+
+                    Slider? slider = element as Slider;
+                    slider?.checkrelease();
                 }
             }
 
@@ -205,6 +214,13 @@ namespace UI
                 }
             }
 
+            void SliderCheck(string name, float var)
+            {
+                if (name == "brightness")
+                {
+                    brightness = 255 * var;
+                }
+            }
 
             // CREATING A UI
 
@@ -212,7 +228,6 @@ namespace UI
             foreach (UIelement element in menubuttons)
             {
                 Button? button = element as Button;
-
                 if (button != null)
                 {
                     button.buttondown += OnButtonPress;
@@ -241,6 +256,16 @@ namespace UI
 
                 mousepos = new(Mouse.GetPosition(app).X, Mouse.GetPosition(app).Y);
 
+                foreach (UIelement element in uielements.ToList())
+                {
+                    Slider? slider = element as Slider;
+                    if (slider != null)
+                    {
+                        float var = slider.update(mousepos, app);
+                        SliderCheck(slider.name, var);
+                    }
+                }
+
                 if (Keyboard.IsKeyPressed(Keyboard.Key.W))
                 {
                 }
@@ -254,7 +279,7 @@ namespace UI
                 uielements[0].ylock = (uint)lockaxis.y;
 
                 // Clear screen
-                app.Clear(windowcolour);
+                app.Clear(windowcolour * new Color((byte)brightness, (byte)brightness, (byte)brightness));
 
                 //draw things here
                 for (int i = uielements.Count - 1; i >= 0; i--)

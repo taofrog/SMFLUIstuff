@@ -85,7 +85,7 @@ namespace UI
             }
 
             vec2 pos = topleft(app.GetView());
-            sprite.Position = new Vector2f(pos.x, pos.y);
+            rendersprite.Position = new Vector2f(pos.x, pos.y);
 
             app.Draw(rendersprite);
         }

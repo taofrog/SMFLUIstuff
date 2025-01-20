@@ -44,18 +44,16 @@ namespace UI
 
             //defining button layouts for different pages
             //
-            UIelement[] menubuttons = {new Button("play", lockaxis, new(0), new(30, 30), "playbutton.png"),
-                                    new Button("left", new(1, 1), new(-75, 0), new(30, 30), "leftbutton.png", "altleftbutton.png"),
-                                    new Button("right", new(1, 1), new(75, 0), new(30, 30), "rightbutton.png", "altrightbutton.png"),
-                                    new Button("up", new(1, 1), new(0, -75), new(30, 30), "upbutton.png", "altupbutton.png"),
-                                    new Button("down", new(1, 1), new(0, 75), new(30, 30), "downbutton.png", "altdownbutton.png"),
-                                    new Button("reset", new(1, 1), new(-250, 0), new(20, 20), "reloadbutton.png", "altreloadbutton.png"),
-                                    new UIelement(new(1, 1), new(0, 0), new(120, 120), "arrowbackground.png")
+            UIelement[] menubuttons = {new Button("play", lockaxis, new(0), new(30, 30), "assets/playbutton.png"),
+                                    new Button("left", new(1, 1), new(-75, 0), new(30, 30), "assets/leftbutton.png", "assets/altleftbutton.png"),
+                                    new Button("right", new(1, 1), new(75, 0), new(30, 30), "assets/rightbutton.png", "assets/altrightbutton.png"),
+                                    new Button("up", new(1, 1), new(0, -75), new(30, 30), "assets/upbutton.png", "assets/altupbutton.png"),
+                                    new Button("down", new(1, 1), new(0, 75), new(30, 30), "assets/downbutton.png", "assets/altdownbutton.png"),
+                                    new Button("reset", new(1, 1), new(-250, 0), new(20, 20), "assets/reloadbutton.png", "assets/altreloadbutton.png"),
+                                    new UIelement(new(1, 1), new(0, 0), new(120, 120), "assets/arrowbackground.png")
                                     };
 
-            UIelement[] submenubuttons = { new Button("play", lockaxis, new(0), new(20, 10), "playbutton.png"),
-                                        new Button("left", new(0, 1), new(0, 100), new(20, 20), "leftbutton.png"),
-                                        new Button("right", new(2, 1), new(0, 100), new(20, 20), "rightbutton.png"),
+            UIelement[] submenubuttons = { new Button("play", lockaxis, new(0), new(20, 20), "assets/playbutton.png"),
                                         new Button("colour", new(1, 2), new(0, -50), new(20, 20)),
                                         };
 
@@ -209,6 +207,8 @@ namespace UI
 
 
             // CREATING A UI
+
+            // initialising the eventhandlers
             foreach (UIelement element in menubuttons)
             {
                 Button? button = element as Button;
@@ -231,7 +231,7 @@ namespace UI
                 }
             }
 
-            uielements = new(menubuttons);
+            uielements = new List<UIelement>(menubuttons);
 
             // Start the game loop
             while (app.IsOpen)

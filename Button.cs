@@ -25,7 +25,7 @@ namespace UI
 
         public event EventHandler? buttonup;
 
-        public Button(string myname, vec2 locked, vec2 offset, vec2 hsize, string texturepath = "notexture.png", string? alttexturepath = null) : base(locked, offset, hsize, texturepath)
+        public Button(string myname, vec2 locked, vec2 offset, vec2 hsize, string texturepath = "assets/notexture.png", string? alttexturepath = null) : base(locked, offset, hsize, texturepath)
         {
             name = myname;
             held = false;
@@ -85,7 +85,7 @@ namespace UI
             }
 
             vec2 pos = topleft(app.GetView());
-            rendersprite.Position = new Vector2f(pos.x, pos.y);
+            sprite.Position = new Vector2f(pos.x, pos.y);
 
             app.Draw(rendersprite);
         }

@@ -17,28 +17,14 @@ namespace UI
         public bool held;
         public string name;
 
-        protected Texture? alttexture;
-        protected Sprite? altsprite;
-        protected bool usealtsprite = false;
-
         public event EventHandler? buttondown;
 
         public event EventHandler? buttonup;
 
-        public Button(string myname, vec2 locked, vec2 offset, vec2 hsize, string texturepath = "assets/notexture.png", string? alttexturepath = null) : base(locked, offset, hsize, texturepath)
+        public Button(string myname, vec2 locked, vec2 offset, vec2 hsize) : base(locked, offset, hsize)
         {
             name = myname;
             held = false;
-
-            if (alttexturepath != null)
-            {
-                usealtsprite = true;
-
-                alttexture = new Texture(alttexturepath);
-                alttexture.Smooth = true;
-                altsprite = new Sprite(alttexture);
-                altsprite.Scale = new Vector2f(2 * halfsize.x / texture.Size.X, 2 * halfsize.y / texture.Size.Y);
-            }
         }
 
         public void checkpress(vec2 mousepos, RenderWindow app)
@@ -67,27 +53,6 @@ namespace UI
                 held = false;
                 buttonup?.Invoke(this, new EventArgs());
             }
-        }
-
-        public override void draw(RenderWindow app)
-        {
-            Sprite rendersprite = new Sprite(sprite);
-            if (held)
-            {
-                if (altsprite == null)
-                {
-                    rendersprite.Color = new Color(100, 100, 100, 255);
-                }
-                else
-                {
-                    rendersprite = new Sprite(altsprite);
-                }
-            }
-
-            vec2 pos = topleft(app.GetView());
-            rendersprite.Position = new Vector2f(pos.x, pos.y);
-
-            app.Draw(rendersprite);
         }
 
         public override string ToString() => name;

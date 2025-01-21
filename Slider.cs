@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Vector;
 using SFML.Window;
+using System.Drawing;
 
 namespace UI
 {
@@ -20,21 +21,13 @@ namespace UI
         public bool held;
         public vec2 handlesize;
 
-        public Texture handletexture;
-        public Sprite handlesprite;
-
-        public Slider(string myname, vec2 locked, vec2 offset, vec2 hsize, float initval) : base(locked, offset, hsize)
+        public Slider(string myname, vec2 locked, vec2 offset, vec2 hsize, float initval, string slidetexpath = "assets/notexture.png", string handletexpath = "assets/notexture.png") : base(locked, offset, hsize)
         {
             name = myname;
             length = hsize.x * 2;
             val = initval;
             handledistance = val * length;
             handlesize = new(hsize.y * 2 + 4);
-
-            handletexture = new Texture("assets/notexture.png");
-            handletexture.Smooth = true;
-            handlesprite = new Sprite(handletexture);
-            handlesprite.Scale = new Vector2f(handlesize.x / texture.Size.X, handlesize.y / texture.Size.Y);
         }
 
         public void checkpress(vec2 mousepos, RenderWindow app)
@@ -92,12 +85,14 @@ namespace UI
             base.draw(app);
             vec2 handlecorner = gethandlecorner(app.GetView());
 
-            handlesprite.Position = new Vector2f(handlecorner.x, handlecorner.y);
+            RectangleShape r = new RectangleShape(new Vector2f(handlesize.x, handlesize.y));
+            r.Position = new Vector2f(handlecorner.x, handlecorner.y);
 
-            app.Draw(handlesprite);
+            r.FillColor = new(255, 0, 0, 155);
+            app.Draw(r);
         }
 
-        vec2 gethandlecorner(View cam)
+        protected vec2 gethandlecorner(View cam)
         {
             vec2 handlecorner = (topleft(cam) + halfsize) - handlesize / 2;
             handlecorner.x += handledistance - halfsize.x;

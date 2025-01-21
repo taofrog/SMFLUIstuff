@@ -10,6 +10,7 @@ using SFML.Window;
 using SFML.Graphics;
 using System.Runtime.InteropServices.Marshalling;
 using static SFML.Window.Mouse;
+using System.Drawing;
 
 namespace UI
 {
@@ -45,9 +46,6 @@ namespace UI
         protected UIpos position;
         protected vec2 halfsize;
 
-        protected Texture texture;
-        protected Sprite sprite;
-
         public uint xlock
         {
             get { return position.xlock; }
@@ -76,15 +74,10 @@ namespace UI
             set { halfsize = value; }
         }
 
-        public UIelement(vec2 locked, vec2 offset, vec2 hsize, string texturepath = "assets/notexture.png")
+        public UIelement(vec2 locked, vec2 offset, vec2 hsize)
         {
             position = new UIpos(locked, offset);
             halfsize = hsize;
-
-            texture = new Texture(texturepath);
-            texture.Smooth = true;
-            sprite = new Sprite(texture);
-            sprite.Scale = new Vector2f(2*halfsize.x / texture.Size.X, 2 * halfsize.y / texture.Size.Y);
         }
 
         public vec2 topleft(View camera)
@@ -125,9 +118,12 @@ namespace UI
         public virtual void draw(RenderWindow app)
         {
             vec2 pos = topleft(app.GetView());
-            sprite.Position = new Vector2f(pos.x, pos.y);
 
-            app.Draw(sprite);
+            RectangleShape r = new RectangleShape(new Vector2f(halfsize.x * 2, halfsize.y * 2));
+            r.Position = new Vector2f(pos.x, pos.y);
+
+            r.FillColor = new(255, 0, 0, 155);
+            app.Draw(r);
         }
 
         /*

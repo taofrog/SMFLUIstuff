@@ -39,6 +39,7 @@ namespace UI
             float brightness = 255;
 
             vec2 lockaxis = new(1, 1);
+            vec2 offset = new();
 
             List<UIelement> uielements = new();
 
@@ -46,18 +47,25 @@ namespace UI
 
             //defining button layouts for different pages
             //
-            UIelement[] menubuttons = {new Button("play", lockaxis, new(0), new(30, 30), "assets/playbutton.png"),
-                                    new Button("left", new(1, 1), new(-75, 0), new(30, 30), "assets/leftbutton.png", "assets/altleftbutton.png"),
-                                    new Button("right", new(1, 1), new(75, 0), new(30, 30), "assets/rightbutton.png", "assets/altrightbutton.png"),
-                                    new Button("up", new(1, 1), new(0, -75), new(30, 30), "assets/upbutton.png", "assets/altupbutton.png"),
-                                    new Button("down", new(1, 1), new(0, 75), new(30, 30), "assets/downbutton.png", "assets/altdownbutton.png"),
-                                    new Button("reset", new(1, 1), new(-250, 0), new(20, 20), "assets/reloadbutton.png", "assets/altreloadbutton.png"),
-                                    new UIelement(new(1, 1), new(0, 0), new(120, 120), "assets/arrowbackground.png")
+            UIelement[] menubuttons = {new TextureButton("play", lockaxis, new(0), new(30, 30), "assets/playbutton.png"),
+                                    new TextureButton("left", new(1, 1), new(-75, 0), new(30, 30), "assets/leftbutton.png", "assets/altleftbutton.png"),
+                                    new TextureButton("right", new(1, 1), new(75, 0), new(30, 30), "assets/rightbutton.png", "assets/altrightbutton.png"),
+                                    new LabelButton("up", new(1, 1), new(0, -75), new(30, 30), "Up", "assets/upbutton.png", "assets/altupbutton.png"),
+                                    new LabelButton("down", new(1, 1), new(0, 75), new(30, 30), "Down", "assets/downbutton.png", "assets/altdownbutton.png"),
+                                    new TextureButton("reset", new(1, 1), new(-250, 0), new(20, 20), "assets/reloadbutton.png", "assets/altreloadbutton.png"),
+                                    new UIimage(new(1, 1), new(0, 0), new(120, 120), "assets/arrowbackground.png")
                                     };
 
-            UIelement[] submenubuttons = { new Button("play", lockaxis, new(0), new(20, 20), "assets/playbutton.png"),
+            UIelement[] submenubuttons = { new TextureButton("play", lockaxis, new(0), new(20, 20), "assets/playbutton.png"),
                                         new Button("colour", new(1, 2), new(0, -50), new(20, 20)),
-                                        new Slider("brightness", new(1, 1), new(0, -50), new(100, 10), 1)
+                                        new Slider("yoffset", new(1, 1), new(0, -50), new(100, 10), 0.5f),
+                                        new Slider("xoffset", new(1, 1), new(0, 50), new(100, 10), 0.5f),
+                                        new Slider("no", new(1, 1), new(0, -75), new(100, 10), 1),
+                                        new Slider("no", new(1, 1), new(0, 75), new(100, 10), 1),
+                                        new Slider("no", new(1, 1), new(0, -100), new(100, 10), 1),
+                                        new Slider("no", new(1, 1), new(0, 100), new(100, 10), 1),
+                                        new Slider("no", new(1, 1), new(0, -125), new(100, 10), 1),
+                                        new TextureSlider("brightness", new(1, 1), new(0, 125), new(100, 10), 1, "assets/slide.png", "assets/handle.png", "assets/althandle.png", new(12, 2)),
                                         };
 
 
@@ -220,6 +228,16 @@ namespace UI
                 {
                     brightness = 255 * var;
                 }
+                else if (name == "xoffset")
+                {
+                    offset.x = 500 * var - 250;
+                }
+                else if (name == "yoffset")
+                {
+                    offset.y = -500 * var + 250;
+                }
+
+                Console.WriteLine(offset);
             }
 
             // CREATING A UI
@@ -277,6 +295,8 @@ namespace UI
 
                 uielements[0].xlock = (uint)lockaxis.x;
                 uielements[0].ylock = (uint)lockaxis.y;
+                uielements[0].xoffset = offset.x;
+                uielements[0].yoffset = offset.y;
 
                 // Clear screen
                 app.Clear(windowcolour * new Color((byte)brightness, (byte)brightness, (byte)brightness));

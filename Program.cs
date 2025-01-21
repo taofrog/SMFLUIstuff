@@ -50,14 +50,14 @@ namespace UI
             UIelement[] menubuttons = {new TextureButton("play", lockaxis, new(0), new(30, 30), "assets/playbutton.png"),
                                     new TextureButton("left", new(1, 1), new(-75, 0), new(30, 30), "assets/leftbutton.png", "assets/altleftbutton.png"),
                                     new TextureButton("right", new(1, 1), new(75, 0), new(30, 30), "assets/rightbutton.png", "assets/altrightbutton.png"),
-                                    new LabelButton("up", new(1, 1), new(0, -75), new(30, 30), "Up", "assets/upbutton.png", "assets/altupbutton.png"),
+                                    new LabelButton("up", new(1, 1), new(0, -75), new(30, 30), "Up"),
                                     new LabelButton("down", new(1, 1), new(0, 75), new(30, 30), "Down", "assets/downbutton.png", "assets/altdownbutton.png"),
                                     new TextureButton("reset", new(1, 1), new(-250, 0), new(20, 20), "assets/reloadbutton.png", "assets/altreloadbutton.png"),
                                     new UIimage(new(1, 1), new(0, 0), new(120, 120), "assets/arrowbackground.png")
                                     };
 
             UIelement[] submenubuttons = { new TextureButton("play", lockaxis, new(0), new(20, 20), "assets/playbutton.png"),
-                                        new Button("colour", new(1, 2), new(0, -50), new(20, 20)),
+                                        new LabelButton("colour", new(1, 2), new(0, -50), new(20, 20), "Dark mode\n  On / Off"),
                                         new Slider("yoffset", new(1, 1), new(0, -50), new(100, 10), 0.5f),
                                         new Slider("xoffset", new(1, 1), new(0, 50), new(100, 10), 0.5f),
                                         new Slider("no", new(1, 1), new(0, -75), new(100, 10), 1),
@@ -236,8 +236,6 @@ namespace UI
                 {
                     offset.y = -500 * var + 250;
                 }
-
-                Console.WriteLine(offset);
             }
 
             // CREATING A UI

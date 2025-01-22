@@ -15,15 +15,13 @@ namespace UI
     internal class Button : UIelement
     {
         public bool held;
-        public string name;
 
         public event EventHandler? buttondown;
 
         public event EventHandler? buttonup;
 
-        public Button(string myname, vec2 locked, vec2 offset, vec2 hsize) : base(locked, offset, hsize)
+        public Button(string myname, vec2 locked, vec2 offset, vec2 hsize) : base(myname, locked, offset, hsize)
         {
-            name = myname;
             held = false;
         }
 

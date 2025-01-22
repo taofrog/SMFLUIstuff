@@ -14,7 +14,7 @@ namespace UI
         protected Texture texture;
         protected Sprite sprite;
 
-        public UIimage(vec2 locked, vec2 offset, vec2 hsize, string texturepath = "assets/notexture.png") : base(locked, offset, hsize)
+        public UIimage(string myname, vec2 locked, vec2 offset, vec2 hsize, string texturepath = "assets/notexture.png") : base(myname, locked, offset, hsize)
         {
             texture = new Texture(texturepath);
             texture.Smooth = true;

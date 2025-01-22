@@ -13,17 +13,14 @@ namespace UI
 {
     internal class Slider : UIelement
     {
-        public string name;
-
         public float length;
         public float val;
         public float handledistance;
         public bool held;
         public vec2 handlesize;
 
-        public Slider(string myname, vec2 locked, vec2 offset, vec2 hsize, float initval, string slidetexpath = "assets/notexture.png", string handletexpath = "assets/notexture.png") : base(locked, offset, hsize)
+        public Slider(string myname, vec2 locked, vec2 offset, vec2 hsize, float initval, string slidetexpath = "assets/notexture.png", string handletexpath = "assets/notexture.png") : base(myname, locked, offset, hsize)
         {
-            name = myname;
             length = hsize.x * 2;
             val = initval;
             handledistance = val * length;

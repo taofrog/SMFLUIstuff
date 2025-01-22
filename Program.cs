@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.ExceptionServices;
 using SFML;
+using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
@@ -45,27 +46,35 @@ namespace UI
 
             int page = 0;
 
+            SoundBuffer clickbuffer = new("assets/Click.wav");
+            Sound click = new Sound(clickbuffer);
+
+            SoundBufferRecorder recorder = new();
+
             //defining button layouts for different pages
             //
             UIelement[] menubuttons = {new TextureButton("play", lockaxis, new(0), new(30, 30), "assets/playbutton.png"),
                                     new TextureButton("left", new(1, 1), new(-75, 0), new(30, 30), "assets/leftbutton.png", "assets/altleftbutton.png"),
                                     new TextureButton("right", new(1, 1), new(75, 0), new(30, 30), "assets/rightbutton.png", "assets/altrightbutton.png"),
-                                    new LabelButton("up", new(1, 1), new(0, -75), new(30, 30), "Up"),
-                                    new LabelButton("down", new(1, 1), new(0, 75), new(30, 30), "Down", "assets/downbutton.png", "assets/altdownbutton.png"),
+                                    new LabelButton("up", new(1, 1), new(0, -75), new(30, 30), "Up", "assets/upbutton.png", "assets/altupbutton.png"),
+                                    new LabelButton("down", new(1, 1), new(0, 75), new(30, 30), "1234567890", "assets/downbutton.png", "assets/altdownbutton.png"),
                                     new TextureButton("reset", new(1, 1), new(-250, 0), new(20, 20), "assets/reloadbutton.png", "assets/altreloadbutton.png"),
-                                    new UIimage(new(1, 1), new(0, 0), new(120, 120), "assets/arrowbackground.png")
+                                    new LabelButton("rec", new(1, 1), new(250, 0), new(20, 20), "Rec", "assets/playbutton.png"),
+                                    new UIimage("arrows", new(1, 1), new(0, 0), new(120, 120), "assets/arrowbackground.png")
                                     };
 
             UIelement[] submenubuttons = { new TextureButton("play", lockaxis, new(0), new(20, 20), "assets/playbutton.png"),
                                         new LabelButton("colour", new(1, 2), new(0, -50), new(20, 20), "Dark mode\n  On / Off"),
-                                        new Slider("yoffset", new(1, 1), new(0, -50), new(100, 10), 0.5f),
-                                        new Slider("xoffset", new(1, 1), new(0, 50), new(100, 10), 0.5f),
+                                        new TextureSlider("yoffset", new(1, 1), new(0, -50), new(100, 10), 0.5f, "assets/slide.png", "assets/handle.png", "assets/althandle.png", new(12, 2)),
+                                        new TextureSlider("xoffset", new(1, 1), new(0, 50), new(100, 10), 0.5f, "assets/slide.png", "assets/handle.png", "assets/althandle.png", new(12, 2)),
+                                        new Label("offsety", new(1, 1), new(150, -50), new(20, 10), "0"),
+                                        new Label("offsetx", new(1, 1), new(150, 50), new(20, 10), "0"),
                                         new Slider("no", new(1, 1), new(0, -75), new(100, 10), 1),
                                         new Slider("no", new(1, 1), new(0, 75), new(100, 10), 1),
                                         new Slider("no", new(1, 1), new(0, -100), new(100, 10), 1),
                                         new Slider("no", new(1, 1), new(0, 100), new(100, 10), 1),
                                         new Slider("no", new(1, 1), new(0, -125), new(100, 10), 1),
-                                        new TextureSlider("brightness", new(1, 1), new(0, 125), new(100, 10), 1, "assets/slide.png", "assets/handle.png", "assets/althandle.png", new(12, 2)),
+                                        new TextureSlider("brightness", new(1, 1), new(0, 125), new(100, 10), 1, "assets/sunslide.png", "assets/sunhandle.png", "assets/altsunhandle.png", new(12, 2)),
                                         };
 
 
@@ -166,6 +175,10 @@ namespace UI
             void OnButtonPress(object sender, EventArgs e)
             {
                 string ?name = sender.ToString();
+                if (name != "rec")
+                {
+                    click.Play();
+                }
 
                 if (name == "left")
                 {
@@ -198,6 +211,10 @@ namespace UI
                         windowcolour = new Color(0, 192, 255);
                     }
                 }
+                else if(name == "rec")
+                {
+                    recorder.Start();
+                }
             }
             void OnButtonRelease(object sender, EventArgs e)
             {
@@ -220,6 +237,11 @@ namespace UI
                         uielements = new(menubuttons);
                     }
                 }
+                else if (name == "rec")
+                {
+                    recorder.Stop();
+                    click = new(recorder.SoundBuffer);
+                }
             }
 
             void SliderCheck(string name, float var)
@@ -235,6 +257,30 @@ namespace UI
                 else if (name == "yoffset")
                 {
                     offset.y = -500 * var + 250;
+                }
+            }
+
+            void LabelCheck(Label label)
+            {
+                string newtext = label.text.DisplayedString;
+                string name = label.name;
+                if (name == "offsetx")
+                {
+                    newtext = "X position: " + ((int)offset.x).ToString();
+                }
+                else if (name == "offsety")
+                {
+                    newtext = "Y position: " + ((int)offset.y).ToString();
+                }
+                else
+                {
+                    return;
+                }
+
+                if (newtext != label.text.DisplayedString)
+                {
+                    label.retext(newtext);
+                    Console.WriteLine("changed");
                 }
             }
 
@@ -279,6 +325,11 @@ namespace UI
                     {
                         float var = slider.update(mousepos, app);
                         SliderCheck(slider.name, var);
+                    }
+                    Label? label = element as Label;
+                    if (label != null)
+                    {
+                        LabelCheck(label);
                     }
                 }
 

@@ -43,6 +43,8 @@ namespace UI
 
     internal class UIelement
     {
+        public string name;
+
         protected UIpos position;
         protected vec2 halfsize;
 
@@ -74,8 +76,9 @@ namespace UI
             set { halfsize = value; }
         }
 
-        public UIelement(vec2 locked, vec2 offset, vec2 hsize)
+        public UIelement(string myname, vec2 locked, vec2 offset, vec2 hsize)
         {
+            name = myname;
             position = new UIpos(locked, offset);
             halfsize = hsize;
         }

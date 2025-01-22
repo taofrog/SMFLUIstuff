@@ -12,10 +12,10 @@ namespace UI
     internal class LabelButton : TextureButton
     {
         private Text text;
-        private Font font = new("assets/SuperStory.ttf");
+        private Font font = new("assets/AldotheApache.ttf");
         float textyoffset = 0;
 
-        public LabelButton(string myname, vec2 locked, vec2 offset, vec2 hsize, string label, string texturepath = "assets/notexture.png", string? alttexturepath = null) 
+        public LabelButton(string myname, vec2 locked, vec2 offset, vec2 hsize, string label, string? texturepath = null, string? alttexturepath = null) 
             : base(myname, locked, offset, hsize, texturepath, alttexturepath)
         {
             text = new(label, font);
